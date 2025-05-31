@@ -58,6 +58,8 @@ function App() {
                   <GoalItem item={item} />
                 );
               }}
+              keyExtractor={(item, index) => index.toString()}
+              alwaysBounceVertical={false}
             />
           </View>
         </View>
