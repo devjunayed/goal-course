@@ -1,7 +1,13 @@
-import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
-import { View, Text, StyleSheet, TextInput, Button } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  Button,
+  FlatList,
+} from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import GoalItem from "./components/GoalItem";
 
 function App() {
   const [enteredText, setEnteredText] = useState("");
@@ -12,7 +18,7 @@ function App() {
   }
 
   function addGoalHandler() {
-    if(enteredText.length > 0){
+    if (enteredText.length > 0) {
       setCoursGoal((coursGoal) => [...coursGoal, enteredText]);
     }
     setEnteredText("");
@@ -32,10 +38,27 @@ function App() {
             />
             <Button onPress={addGoalHandler} title="Add Goal" />
           </View>
+          {/* for smaller data */}
+          {/* <View style={styles.goalsContainer}>
+            <ScrollView>
+              {coursGoal.map((text, index) => (
+                <View key={index}>
+                  <Text style={styles.goalItem}>{text}</Text>
+                </View>
+              ))}
+            </ScrollView>
+          </View> */}
+
+          {/* for larger data */}
           <View style={styles.goalsContainer}>
-            {coursGoal.map((text, index) => (
-              <Text style={styles.goalItem} key={index}>{text}</Text>
-            ))}
+            <FlatList
+              data={coursGoal}
+              renderItem={(item) => {
+                return (
+                  <GoalItem item={item} />
+                );
+              }}
+            />
           </View>
         </View>
       </SafeAreaView>
@@ -69,15 +92,9 @@ const styles = StyleSheet.create({
     borderColor: "#cccccc",
   },
   goalsContainer: {
-    flex: 8,
+    flex: 5,
   },
-  goalItem: {
-    margin: 8,
-    borderRadius: 6,
-    backgroundColor: '#5e0acc',
-    padding: 8,
-    color: "white"
-  }
+
 });
 
 export default App;
