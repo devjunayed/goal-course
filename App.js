@@ -2,17 +2,19 @@ import { useState } from "react";
 import {
   View,
   StyleSheet,
-  TextInput,
   Button,
   FlatList,
   Alert,
+  Pressable,
+  Text,
 } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import GoalItem from "./components/GoalItem";
 import GoalInput from "./components/GoalInput";
+import { StatusBar } from "expo-status-bar";
 
 function App() {
   const [enteredText, setEnteredText] = useState("");
+  const [open, setOpen] = useState(false);
   const [coursGoal, setCoursGoal] = useState([]);
 
   function goalInputHandler(text) {
@@ -46,19 +48,26 @@ function App() {
       ]);
     }
     setEnteredText("");
+    setOpen(false);
   }
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.safeArea}>
-        <View style={styles.appContainer}>
-          <GoalInput
-            addGoalHandler={addGoalHandler}
-            enteredText={enteredText}
-            goalInputHandler={goalInputHandler}
-          />
-          {/* for smaller data */}
-          {/* <View style={styles.goalsContainer}>
+    <>
+      <StatusBar style="light" />
+
+      <View style={styles.appContainer}>
+        <Pressable onPress={() => setOpen(true)} style={styles.button}>
+          <Text style={styles.buttonTxt}>+</Text>
+        </Pressable>
+        <GoalInput
+          open={open}
+          addGoalHandler={addGoalHandler}
+          enteredText={enteredText}
+          goalInputHandler={goalInputHandler}
+          setOpen={setOpen}
+        />
+        {/* for smaller data */}
+        {/* <View style={styles.goalsContainer}>
             <ScrollView>
               {coursGoal.map((text, index) => (
                 <View key={index}>
@@ -68,7 +77,13 @@ function App() {
             </ScrollView>
           </View> */}
 
-          {/* for larger data */}
+        {/* for larger data */}
+
+        {coursGoal.length === 0 ? (
+          <View style={styles.noCoursGoalWrapper}>
+            <Text style={styles.noCoursGoalTxt}>No Course Goal</Text>
+          </View>
+        ) : (
           <View style={styles.goalsContainer}>
             <FlatList
               data={coursGoal}
@@ -81,10 +96,10 @@ function App() {
               alwaysBounceVertical={false}
             />
           </View>
-        </View>
-      </SafeAreaView>
-    </SafeAreaProvider>
-  );
+        )}
+      </View>
+    </>
+  );  
 }
 
 const styles = StyleSheet.create({
@@ -92,12 +107,43 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   appContainer: {
+    marginTop: 40,
     flex: 1,
     padding: 10,
   },
 
   goalsContainer: {
     flex: 5,
+  },
+  button: {
+    position: "absolute",
+    bottom: 60,
+    right: 30,
+    color: "white",
+    borderWidth: 1,
+    borderColor: "white",
+    borderRadius: 30,
+    elevation: 1,
+    width: 60,
+    height: 60,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 10,
+  },
+  buttonTxt: {
+    fontSize: 30,
+    color: "white",
+  },
+  noCoursGoalTxt: {
+    color: "white",
+    fontSize: 20,
+    textAlign: "center",
+  },
+  noCoursGoalWrapper: {
+    flexDirection: "column",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
